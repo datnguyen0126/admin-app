@@ -1,0 +1,9 @@
+id, name, brand, price
+
+cpu, vga, ram
+
+disk, battery, dimension
+
+display, screen_size,  weight,
+
+dimension,
