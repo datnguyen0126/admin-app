@@ -1,19 +1,15 @@
 import tkinter as tk
-from setups.setup import Setup_database_tables, check_configurations
 import os
 from Views import *
 from models.config import Configurations
 
-# Portfolio Reconciliation and Management System (PRMS)
 
 DATABASE_NAME = Configurations.DATABASE_NAME
 # SETUP #
-check_configurations()
 
 if not os.path.exists(DATABASE_NAME):
     current_dir = os.getcwd()
     db_path = current_dir + r"\{}".format(DATABASE_NAME)  # create database
-    Setup_database_tables(db_path)
 ###
 
 

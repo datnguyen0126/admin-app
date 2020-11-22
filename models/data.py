@@ -5,9 +5,9 @@ url = Configurations.API_URL + 'data'
 url_cluster = Configurations.API_URL + 'result/cluster_data'
 
 
-def get_all_product(name=''):
+def get_all_product(name='', option='name'):
     try:
-        response = requests.get(url + f'?name={name}')
+        response = requests.get(url + f'?name={name}&option={option}')
         if response.status_code == 200:
             data = json.loads(response.text)
             return data
@@ -66,11 +66,12 @@ def reload_score(laptop_id):
         return
 
 
-def set_train_products(laptop_ids, answer):
+def set_train_products(laptop_ids, answer, check):
     try:
         form_data = {
             'ids': ' '.join([str(elem) for elem in laptop_ids]),
-            'content': answer
+            'content': answer,
+            'check': check
         }
         response = requests.post(Configurations.API_URL + 'result/set_train_products', data=form_data)
         if response.status_code == 200:
@@ -108,4 +109,19 @@ def remove_train_product(id, answer):
     except Exception as e:
         print(e)
         return
+
+def check_product(id, answer):
+    try:
+        form_data = {
+            'laptop_id': id,
+            'content': answer
+        }
+        response = requests.post(Configurations.API_URL + 'result/check_product', data=form_data)
+        if response.status_code == 200:
+            data = json.loads(response.text)
+            return data
+    except Exception as e:
+        print(e)
+        return
+
 

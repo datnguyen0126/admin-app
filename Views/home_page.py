@@ -34,17 +34,39 @@ class HomePageFrame(BaseFrame):
                                      text="Product table")
         frame_prices.place(rely=0.05, relx=0.02, height=550, width=500)
 
-        frame_order = tk.LabelFrame(self, frame_styles, text="Product detail")
-        frame_order.place(rely=0.05, relx=0.35, height=450, width=1000)
-
-        frame_score = tk.LabelFrame(self, frame_styles, text="Product Benchmark")
-        frame_score.place(rely=0.55, relx=0.35, height=370, width=1000)
-
         frame_train = tk.LabelFrame(self, frame_styles, text="Train products")
         frame_train.place(rely=0.63, relx=0.02, height=300, width=500)
 
+        frame_filter = tk.LabelFrame(self, frame_styles, text="Filter")
+        frame_filter.place(rely=0.05, relx=0.35, height=55, width=1000)
+
+        frame_order = tk.LabelFrame(self, frame_styles, text="Product detail")
+        frame_order.place(rely=0.12, relx=0.35, height=440, width=1000)
+
+        frame_score = tk.LabelFrame(self, frame_styles, text="Product Benchmark")
+        frame_score.place(rely=0.63, relx=0.35, height=95, width=1000)
+
+        frame_set_train = tk.LabelFrame(self, frame_styles, text="Set train product")
+        frame_set_train.place(rely=0.75, relx=0.35, height=110, width=1000)
+
+        frame_classify = tk.LabelFrame(self, frame_styles, text="Classification")
+        frame_classify.place(rely=0.87, relx=0.35, height=82, width=1000)
+
+        list_find = ['name', 'cpu']
+        self.find_option = tk.StringVar(frame_filter)
+        label_find = tk.Label(frame_filter, text_styles, text="Find ")
+        label_find.place(relx=0.05, rely=0.06)
+        self.option_menu_find = ttk.OptionMenu(frame_filter, self.find_option, list_find[0], *list_find)
+        self.option_menu_find.place(relx=0.1, rely=0.06)
+        self.entry_find = ttk.Entry(frame_filter, width=50, cursor="xterm")
+        self.entry_find.place(relx=0.17, rely=0.06)
+
+        get_btn = ttk.Button(frame_filter, text="Get data", command=lambda: self.load_data())
+        get_btn.place(rely=0.06, relx=0.5)
+
         # row 1
         label_id = tk.Label(frame_order, text_styles, text="id")
+        label_id.place(relx=0.02, rely=0.02)
         label_id.place(relx=0.02, rely=0.02)
         self.entry_id = ttk.Entry(frame_order, width=20, cursor="xterm")
         self.entry_id.place(relx=0.05, rely=0.02)
@@ -118,16 +140,8 @@ class HomePageFrame(BaseFrame):
         self.entry_description = tk.Text(frame_order, width=110, height=12, cursor="xterm")
         self.entry_description.place(relx=0.05, rely=0.42)
 
-        label_find = tk.Label(frame_order, text_styles, text="Find name")
-        label_find.place(relx=0.1, rely=0.9)
-        self.entry_find = ttk.Entry(frame_order, width=30, cursor="xterm")
-        self.entry_find.place(relx=0.2, rely=0.9)
-
-        get_btn = ttk.Button(self, text="Get data", command=lambda: self.load_data())
-        get_btn.place(rely=0.51, relx=0.8)
-
-        update_btn = ttk.Button(self, text="Update product", command=lambda: self.update_item())
-        update_btn.place(rely=0.51, relx=0.87)
+        update_btn = ttk.Button(frame_order, text="Update product", command=lambda: self.update_item())
+        update_btn.place(rely=0.91, relx=0.83)
 
         self.tv_train = ttk.Treeview(frame_train)
         self.tv_train.place(relheight=1, relwidth=0.995)
@@ -135,9 +149,6 @@ class HomePageFrame(BaseFrame):
         self.ts_train.configure(command=self.tv_train.yview)
         self.tv_train.configure(yscrollcommand=self.ts_train.set)
         self.ts_train.pack(side="right", fill="y")
-        # self.ts_train1 = tk.Scrollbar(frame_train, orient='horizontal')
-        # self.ts_train1.configure(command=self.tv_train.xview)
-        # self.ts_train1.pack(side="bottom", fill="x")
         self.product_headers = ("Id", "Product Name")
 
         self.tv_all = ttk.Treeview(frame_prices)
@@ -177,39 +188,55 @@ class HomePageFrame(BaseFrame):
         try:
             self.question_data = get_all_questions()
             for question in self.question_data:
-                list_question.append(question.get('content'))
+                if question.get('train'):
+                    list_question.append(question.get('content'))
 
             for answer in self.question_data[0].get('answers'):
                 self.list_answer.append(answer.get('content'))
 
         except:
-            pass
+            list_question = ['', ]
 
-        self.question = tk.StringVar(frame_score)
-        self.answer = tk.StringVar(frame_score)
+        list_check = ['yes', 'no']
 
-        self.option_menu_question = ttk.OptionMenu(frame_score, self.question, list_question[0], *list_question,
+        self.question = tk.StringVar(frame_set_train)
+        self.answer = tk.StringVar(frame_set_train)
+        self.check = tk.StringVar(frame_set_train)
+
+        self.option_menu_question = ttk.OptionMenu(frame_set_train, self.question, list_question[0], *list_question,
                                                    command=self.load_answer)
-        self.option_menu_question.place(relx=0.12, rely=0.2)
-        label_question = tk.Label(frame_score, text_styles, text="Question")
-        label_question.place(relx=0.03, rely=0.2)
+        self.option_menu_question.place(relx=0.12, rely=0.1)
+        label_question = tk.Label(frame_set_train, text_styles, text="Question")
+        label_question.place(relx=0.03, rely=0.1)
 
-        self.option_menu_answer = ttk.OptionMenu(frame_score, self.answer,
+        self.option_menu_answer = ttk.OptionMenu(frame_set_train, self.answer,
                                                  self.list_answer[0],
                                                  *self.list_answer)
-        self.option_menu_answer.place(relx=0.62, rely=0.2)
-        label_answer = tk.Label(frame_score, text_styles, text="Answer")
-        label_answer.place(relx=0.54, rely=0.2)
+        self.option_menu_answer.place(relx=0.54, rely=0.1)
+        label_answer = tk.Label(frame_set_train, text_styles, text="Answer")
+        label_answer.place(relx=0.47, rely=0.1)
+
+        self.option_menu_check = ttk.OptionMenu(frame_set_train, self.check, list_check[0], *list_check)
+        self.option_menu_check.place(relx=0.9, rely=0.1)
+        label_question = tk.Label(frame_set_train, text_styles, text="Check")
+        label_question.place(relx=0.85, rely=0.1)
 
         self.train_products = []
         self.list_scores = []
 
-        btn_set_train = ttk.Button(frame_score, text="Set train products", command=lambda: self.set_train_products())
-        btn_set_train.place(relx=0.87, rely=0.75)
-        btn_clear = ttk.Button(frame_score, text="Clear train products", command=lambda: self.clear_train_products())
-        btn_clear.place(relx=0.74, rely=0.75)
+        btn_set_train = ttk.Button(frame_set_train, text="Set train products", command=lambda: self.set_train_products())
+        btn_set_train.place(relx=0.87, rely=0.52)
+        btn_clear = ttk.Button(frame_set_train, text="Clear train products", command=lambda: self.clear_train_products())
+        btn_clear.place(relx=0.74, rely=0.52)
         btn_clear = ttk.Button(frame_score, text="Reload score", command=lambda: self.reload_score())
-        btn_clear.place(relx=0.65, rely=0.75)
+        btn_clear.place(relx=0.9, rely=0.52)
+
+        label_weight = tk.Label(frame_classify, text_styles, text="Classify")
+        label_weight.place(relx=0.03, rely=0.2)
+        self.entry_class = ttk.Entry(frame_classify, width=20, cursor="xterm")
+        self.entry_class.place(relx=0.11, rely=0.2)
+        btn_classify = ttk.Button(frame_classify, text="Classify", command=lambda: self.check_item())
+        btn_classify.place(relx=0.87, rely=0.2)
 
     def load_answer(self, value):
         question = {}
@@ -224,6 +251,12 @@ class HomePageFrame(BaseFrame):
         menu.delete(0, "end")
         for answer in self.list_answer:
             menu.add_command(label=answer, command=lambda value=answer: self.answer.set(value))
+
+    def check_item(self):
+        response = check_product(self.entry_id.get(), self.answer.get())
+        self.entry_class.delete(0,"end")
+        self.entry_class.insert(0, response)
+        print(response)
 
     def load_headers(self):
 
@@ -263,7 +296,7 @@ class HomePageFrame(BaseFrame):
 
     def load_data(self):
         self.tv_all.delete(*self.tv_all.get_children())
-        data = get_all_product(name=self.entry_find.get())
+        data = get_all_product(name=self.entry_find.get(), option=self.find_option.get())
         for row in data:
             self.tv_all.insert('', 'end', values=(row.get('id'), row.get('name'), row.get('price')))
 
@@ -336,8 +369,9 @@ class HomePageFrame(BaseFrame):
     def add_product(self, event):
         curItem = self.tv_all.focus()
         product = self.tv_all.item(curItem).get('values')
-        self.train_products.append(product)
-        self.tv_train.insert('', 'end', values=(product[0], product[1], product[2]))
+        if product not in self.train_products:
+            self.train_products.append(product)
+            self.tv_train.insert('', 'end', values=(product[0], product[1], product[2]))
 
     def remove_product(self, event):
         curItem = self.tv_train.focus()
@@ -358,7 +392,8 @@ class HomePageFrame(BaseFrame):
     def set_train_products(self):
         laptop_ids = [product[0] for product in self.train_products]
         answer = self.answer.get()
-        set_train_products(laptop_ids, answer)
+        check = self.check.get()
+        set_train_products(laptop_ids, answer, check)
 
     def update_item(self):
         form_data = {

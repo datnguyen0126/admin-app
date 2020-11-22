@@ -28,7 +28,7 @@ class TrainingFrame(BaseFrame):
         frame_chart = tk.LabelFrame(self, frame_styles, text="Chart")
         frame_chart.place(rely=0.05, relx=0.4, relheight=0.86, relwidth=0.55)
 
-        self.canvas_chart = tk.Canvas(frame_chart, bg="blue")
+        self.canvas_chart = tk.Canvas(frame_chart, bg="white")
         self.canvas_chart.pack(expand=True, fill="both")
 
         self.entry_color = ttk.Entry(frame_options, width=30, cursor="xterm")
@@ -155,7 +155,6 @@ class TrainingFrame(BaseFrame):
             self.tv_all.insert('', 'end', values=(key, self.chart_list[key][0].get('answer_name')))
 
     def load_answer(self, value):
-        print(self.chart_list.keys())
         question = {}
         for question in self.question_data:
             if question.get('content') == value:
@@ -171,8 +170,6 @@ class TrainingFrame(BaseFrame):
 
     def initiate_chart(self):
         self.remove_existing_chart()
-
-        print(self.chart_list.keys())
 
         figure = plt.Figure(figsize=(4, 5), facecolor="#f0f6f7", dpi=80)
 
@@ -193,16 +190,21 @@ class TrainingFrame(BaseFrame):
             list_scores = []
             for arr in train_data:
                 product_id = arr.get('laptop')
+                check = arr.get('check')
                 score = get_clustering_data(product_id)
-                list_scores.append(score)
-
-            x_arr = []
-            y_arr = []
-            for score in list_scores:
-                x_arr.append(int(score.get('detected_cpu_score')))
-                y_arr.append(int(score.get('detected_gpu_score')))
-
-            axis.scatter(x_arr, y_arr, s=100, c=key, marker='o', label='benchmark')
+                temp = dict(score=score, check=check)
+                list_scores.append(temp)
+            # x_arr = []
+            # y_arr = []
+            for score1 in list_scores:
+                score = score1.get('score')
+                check = score1.get('check')
+                marker = 'o'
+                if not check:
+                    marker = 'x'
+                axis.scatter(int(score.get('detected_cpu_score')), int(score.get('detected_gpu_score')), s=100, c=key, marker=marker, label='benchmark')
+                # x_arr.append(int(score.get('detected_cpu_score')))
+                # y_arr.append(int(score.get('detected_gpu_score')))
 
         axis.set_xlabel('Cpu benchmark')
         axis.set_ylabel('Gpu benchmark')

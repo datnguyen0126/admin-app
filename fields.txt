@@ -7,3 +7,6 @@ disk, battery, dimension
 display, screen_size,  weight,
 
 dimension,
+
+
+pyinstaller --onefile main.py

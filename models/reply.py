@@ -1,12 +1,12 @@
 import requests, json
 from .config import Configurations
 
-url = Configurations.API_URL + 'question'
+url = Configurations.API_URL + 'result/reply'
 
 
-def get_all_questions():
+def get_reply():
     try:
-        response = requests.get(url + '/ai_question')
+        response = requests.get(url + '/get')
         if response.status_code == 200:
             data = json.loads(response.text)
             return data
@@ -14,9 +14,9 @@ def get_all_questions():
         return
 
 
-def get_answer(id):
+def create_reply(form_data):
     try:
-        response = requests.get(url + f'/{id}')
+        response = requests.post(url + '/add', data=form_data)
         if response.status_code == 200:
             data = json.loads(response.text)
             return data
@@ -24,9 +24,9 @@ def get_answer(id):
         return
 
 
-def post_answer(id, form_data):
+def update_reply(id, form_data):
     try:
-        response = requests.post(url + f'/{id}', data=form_data)
+        response = requests.put(url + '/edit', data=form_data)
         if response.status_code == 200:
             print('update ok')
             data = json.loads(response.text)
@@ -35,9 +35,9 @@ def post_answer(id, form_data):
         return
 
 
-def update_answer(id, form_data):
+def delete_reply(id):
     try:
-        response = requests.put(url + f'/{id}', data=form_data)
+        response = requests.delete(url + 'remove')
         if response.status_code == 200:
             print('update ok')
             data = json.loads(response.text)
